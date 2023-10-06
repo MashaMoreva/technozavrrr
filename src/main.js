@@ -9,5 +9,5 @@ new Vue({
   render: (h) => h(App),
 }).$mount("#app");
 
-showAlert(message1);
-showAlert(message2);
+// showAlert(message1);
+// showAlert(message2);
