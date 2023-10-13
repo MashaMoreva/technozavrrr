@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <li class="catalog__item">
     <a class="catalog__pic" href="#">
       <img :src="product.image" :alt="product.title" />
     </a>
@@ -11,46 +11,46 @@
     <span class="catalog__price"> {{ product.price }} ₽ </span>
 
     <ul class="colors colors--black">
-      <li class="colors__item">
+      <li class="colors__item" v-for="color in product.colors" :key="color">
         <label class="colors__label">
           <input
             class="colors__radio sr-only"
             type="radio"
-            name="color-1"
-            value="#73B6EA"
-            checked=""
+            :value="color"
+            v-model="selectedColor"
           />
-          <span class="colors__value" style="background-color: #73b6ea"> </span>
-        </label>
-      </li>
-      <li class="colors__item">
-        <label class="colors__label">
-          <input
-            class="colors__radio sr-only"
-            type="radio"
-            name="color-1"
-            value="#8BE000"
-          />
-          <span class="colors__value" style="background-color: #8be000"> </span>
-        </label>
-      </li>
-      <li class="colors__item">
-        <label class="colors__label">
-          <input
-            class="colors__radio sr-only"
-            type="radio"
-            name="color-1"
-            value="#222"
-          />
-          <span class="colors__value" style="background-color: #222"> </span>
+          <span class="colors__value" :style="{ backgroundColor: color }">
+          </span>
         </label>
       </li>
     </ul>
-  </div>
+
+    <ul class="sizes" v-if="product.sizes && product.sizes.length > 0">
+      <li class="sizes__item" v-for="size in product.sizes" :key="size">
+        <label class="sizes__label">
+          <input
+            class="sizes__radio sr-only"
+            type="radio"
+            :value="size"
+            v-model="selectedSize"
+          />
+          <span class="sizes__value">
+            {{ size }}
+          </span>
+        </label>
+      </li>
+    </ul>
+  </li>
 </template>
 
 <script>
 export default {
   props: ["product"],
+  data() {
+    return {
+      selectedColor: (this.product.colors && this.product.colors[0]) || null,
+      selectedSize: (this.product.sizes && this.product.sizes[0]) || null,
+    };
+  },
 };
 </script>
