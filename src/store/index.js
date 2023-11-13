@@ -6,14 +6,13 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    cartProducts: [{ productId: 1, amount: 2 }],
+    cartProducts: [],
   },
   mutations: {
     addProductToCart(state, { productId, amount }) {
       const item = state.cartProducts.find(
         (item) => item.productId === productId
       );
-
       if (item) {
         item.amount += amount;
       } else {
@@ -22,6 +21,19 @@ export default new Vuex.Store({
           amount,
         });
       }
+    },
+    updateCartProductAmount(state, { productId, amount }) {
+      const item = state.cartProducts.find(
+        (item) => item.productId === productId
+      );
+      if (item) {
+        item.amount = amount;
+      }
+    },
+    deleteCartProduct(state, productId) {
+      state.cartProducts = state.cartProducts.filter(
+        (item) => item.productId !== productId
+      );
     },
   },
   getters: {
@@ -32,6 +44,12 @@ export default new Vuex.Store({
           product: products.find((p) => p.id === item.productId),
         };
       });
+    },
+    cartTotalPrice(state, getters) {
+      return getters.cartDetailProducts.reduce(
+        (acc, item) => item.product.price * item.amount + acc,
+        0
+      );
     },
   },
 });
