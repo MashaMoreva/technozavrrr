@@ -2,7 +2,9 @@
   <main class="content container">
     <div class="content__top content__top--catalog">
       <h1 class="content__title">Каталог</h1>
-      <span class="content__info"> 152 товара </span>
+      <span class="content__info">
+        {{ countProducts }} {{ getCorrectEnding(countProducts) }}
+      </span>
     </div>
 
     <div class="content__catalog">
@@ -13,6 +15,11 @@
         :color.sync="filterColor"
       />
       <section class="catalog">
+        <div v-if="productsLoading">Загрузка товаров...</div>
+        <div v-if="productsLoadingFailed">
+          Произошла ошибка при загрузке товаров
+          <button @click.prevent="loadProducts">Попробовать еще раз</button>
+        </div>
         <ProductList :products="products" />
         <BasePagination
           v-model="page"
@@ -26,6 +33,7 @@
 
 <script>
 import { API_BASE_URL } from "../config";
+import getCorrectEnding from "@/helpers/getCorrectEnding";
 import ProductList from "@/components/ProductList.vue";
 import BasePagination from "@/components/BasePagination.vue";
 import ProductFilter from "@/components/ProductFilter.vue";
@@ -42,6 +50,8 @@ export default {
       page: 1,
       productsPerPage: 3,
       productsData: null,
+      productsLoading: false,
+      productsLoadingFailed: false,
     };
   },
   computed: {
@@ -60,7 +70,10 @@ export default {
     },
   },
   methods: {
+    getCorrectEnding,
     loadProducts() {
+      this.productsLoading = true;
+      this.productsLoadingFailed = false;
       clearTimeout(this.loadProductsTimer);
       this.loadProductsTimer = setTimeout(() => {
         axios
@@ -73,8 +86,10 @@ export default {
               maxPrice: this.filterPriceTo,
             },
           })
-          .then((res) => (this.productsData = res.data));
-      }, 0);
+          .then((res) => (this.productsData = res.data))
+          .catch(() => (this.productsLoadingFailed = true))
+          .then(() => (this.productsLoading = false));
+      }, 1000);
     },
   },
   watch: {
