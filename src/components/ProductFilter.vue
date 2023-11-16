@@ -180,8 +180,9 @@
 </template>
 
 <script>
-import categories from "@/data/categories";
+import { API_BASE_URL } from "../config";
 import colors from "@/data/colors";
+import axios from "axios";
 
 export default {
   data() {
@@ -190,20 +191,14 @@ export default {
       currentPriceTo: 0,
       currentCategoryId: 0,
       currentColor: "",
+
+      categoriesData: null,
     };
   },
   props: ["priceFrom", "priceTo", "categoryId", "color"],
   computed: {
-    // currentPriceFrom: {
-    //   get() {
-    //     return this.priceFrom;
-    //   },
-    //   set(value) {
-    //     this.$emit("update:priceFrom", value);
-    //   },
-    // },
     categories() {
-      return categories;
+      return this.categoriesData ? this.categoriesData.items : [];
     },
     colors() {
       return colors;
@@ -237,6 +232,14 @@ export default {
       this.$emit("update:color", 0);
       this.currentColor = "";
     },
+    loadCategories() {
+      axios
+        .get(API_BASE_URL + "/api/productCategories")
+        .then((res) => (this.categoriesData = res.data));
+    },
+  },
+  created() {
+    this.loadCategories();
   },
 };
 </script>
