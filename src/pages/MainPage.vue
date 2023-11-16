@@ -25,7 +25,6 @@
 </template>
 
 <script>
-import products from "@/data/products";
 import ProductList from "@/components/ProductList.vue";
 import BasePagination from "@/components/BasePagination.vue";
 import ProductFilter from "@/components/ProductFilter.vue";
@@ -45,35 +44,7 @@ export default {
     };
   },
   computed: {
-    filteredProducts() {
-      let filteredProducts = products;
-      if (this.filterPriceFrom > 0) {
-        filteredProducts = filteredProducts.filter(
-          (product) => product.price > this.filterPriceFrom
-        );
-      }
-      if (this.filterPriceTo > 0) {
-        filteredProducts = filteredProducts.filter(
-          (product) => product.price < this.filterPriceTo
-        );
-      }
-      if (this.filterCategoryId) {
-        filteredProducts = filteredProducts.filter(
-          (product) => product.categoryId === this.filterCategoryId
-        );
-      }
-      if (this.filterColor) {
-        filteredProducts = filteredProducts.filter(
-          (product) =>
-            product.colors && product.colors.includes(this.filterColor)
-        );
-      }
-      return filteredProducts;
-    },
-
     products() {
-      // const offset = (this.page - 1) * this.productsPerPage;
-      // return this.filteredProducts.slice(offset, offset + this.productsPerPage);
       return this.productsData
         ? this.productsData.items.map((product) => {
             return {
