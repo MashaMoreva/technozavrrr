@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { API_BASE_URL } from "../config";
 import ProductList from "@/components/ProductList.vue";
 import BasePagination from "@/components/BasePagination.vue";
 import ProductFilter from "@/components/ProductFilter.vue";
@@ -61,14 +62,29 @@ export default {
   methods: {
     loadProducts() {
       axios
-        .get(
-          `https://vue-study.skillbox.cc/api/products?page=${this.page}&limit=${this.productsPerPage}`
-        )
+        .get(API_BASE_URL + "/api/products", {
+          params: {
+            page: this.page,
+            limit: this.productsPerPage,
+            categoryId: this.filterCategoryId,
+            minPrice: this.filterPriceFrom,
+            maxPrice: this.filterPriceTo,
+          },
+        })
         .then((res) => (this.productsData = res.data));
     },
   },
   watch: {
     page() {
+      this.loadProducts();
+    },
+    filterPriceFrom() {
+      this.loadProducts();
+    },
+    filterPriceTo() {
+      this.loadProducts();
+    },
+    filterCategoryId() {
       this.loadProducts();
     },
   },
