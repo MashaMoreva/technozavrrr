@@ -12,7 +12,7 @@
         :price-from.sync="filterPriceFrom"
         :price-to.sync="filterPriceTo"
         :category-id.sync="filterCategoryId"
-        :color.sync="filterColor"
+        :color-id.sync="filterColorId"
       />
       <section class="catalog">
         <div v-if="productsLoading">Загрузка товаров...</div>
@@ -46,7 +46,7 @@ export default {
       filterPriceFrom: 0,
       filterPriceTo: 0,
       filterCategoryId: 0,
-      filterColor: "",
+      filterColorId: null,
       page: 1,
       productsPerPage: 3,
       productsData: null,
@@ -82,6 +82,7 @@ export default {
               page: this.page,
               limit: this.productsPerPage,
               categoryId: this.filterCategoryId,
+              colorId: this.filterColorId,
               minPrice: this.filterPriceFrom,
               maxPrice: this.filterPriceTo,
             },
@@ -103,6 +104,9 @@ export default {
       this.loadProducts();
     },
     filterCategoryId() {
+      this.loadProducts();
+    },
+    filterColorId() {
       this.loadProducts();
     },
   },
