@@ -14,7 +14,7 @@
     <span class="catalog__price"> {{ product.price | numberFormat }} ₽ </span>
 
     <ul class="colors colors--black">
-      <li class="colors__item" v-for="color in product.colors" :key="color">
+      <li class="colors__item" v-for="color in product.colors" :key="color.id">
         <label class="colors__label">
           <input
             class="colors__radio sr-only"
@@ -22,23 +22,7 @@
             :value="color"
             v-model="selectedColor"
           />
-          <span class="colors__value" :style="{ backgroundColor: color }">
-          </span>
-        </label>
-      </li>
-    </ul>
-
-    <ul class="sizes" v-if="product.sizes && product.sizes.length > 0">
-      <li class="sizes__item" v-for="size in product.sizes" :key="size">
-        <label class="sizes__label">
-          <input
-            class="sizes__radio sr-only"
-            type="radio"
-            :value="size"
-            v-model="selectedSize"
-          />
-          <span class="sizes__value">
-            {{ size }}
+          <span class="colors__value" :style="{ backgroundColor: color.code }">
           </span>
         </label>
       </li>
@@ -55,7 +39,8 @@ export default {
   props: ["product"],
   data() {
     return {
-      selectedColor: (this.product.colors && this.product.colors[0]) || null,
+      selectedColor:
+        (this.product.colors && this.product.colors[0].code) || null,
       selectedSize: (this.product.sizes && this.product.sizes[0]) || null,
     };
   },
