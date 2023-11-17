@@ -1,5 +1,11 @@
 <template>
-  <main class="content container">
+  <main class="content container" v-if="productLoading">
+    Загрузка товара...
+  </main>
+  <main class="content container" v-else-if="!productData">
+    Не удалось закгрузить товар
+  </main>
+  <main class="content container" v-else>
     <div class="content__top">
       <ul class="breadcrumbs">
         <li class="breadcrumbs__item">
@@ -24,7 +30,7 @@
           <img
             width="570"
             height="570"
-            :src="product.image"
+            :src="product.image.file.url"
             :alt="product.title"
           />
         </div>
@@ -195,34 +201,11 @@
 
           <h3>Что это?</h3>
 
-          <p>
-            Wahoo ELEMNT BOLT GPS – это велокомпьютер, который позволяет
-            оптимизировать свои велотренировки, сделав их максимально
-            эффективными. Wahoo ELEMNT BOLT GPS синхронизируется с датчиками по
-            ANT+, объединяя полученную с них информацию. Данные отображаются на
-            дисплее, а также сохраняются на смартфоне. При этом на мобильное
-            устройство можно установить как фирменное приложение, так и
-            различные приложения сторонних разработчиков. Велокомпьютер точно
-            отслеживает местоположение, принимая сигнал с целого комплекса
-            спутников. Эта информация позволяет смотреть уже преодоленные
-            маршруты и планировать новые велопрогулки.
-          </p>
+          <p></p>
 
           <h3>Дизайн</h3>
 
-          <p>
-            Велокомпьютер Wahoo ELEMNT BOLT очень компактный. Размеры устройства
-            составляют всего 74,6 x 47,3 x 22,1 мм. что не превышает габариты
-            смартфона. Корпус гаджета выполнен из черного пластика. На
-            обращенной к пользователю стороне расположен дисплей диагональю 56
-            мм. На дисплей выводятся координаты и скорость, а также полученная
-            со смартфона и синхронизированных датчиков информация:
-            интенсивность, скорость вращения педалей, пульс и т.д. (датчики не
-            входят в комплект поставки). Корпус велокомпьютера имеет степень
-            защиты от влаги IPX7. Это означает, что устройство не боится пыли, а
-            также выдерживает кратковременное (до 30 минут) погружение в воду на
-            глубину не более 1 метра.
-          </p>
+          <p></p>
         </div>
       </div>
     </section>
@@ -234,22 +217,25 @@ import products from "@/data/products";
 import categories from "@/data/categories";
 import gotoPage from "@/helpers/gotoPage";
 import numberFormat from "@/helpers/numberFormat";
+import axios from "axios";
+import { API_BASE_URL } from "@/config";
 
 export default {
   data() {
     return {
       productAmount: 1,
+      productData: null,
+      productLoading: false,
+      productLoadingFaild: false,
     };
   },
   filters: { numberFormat },
   computed: {
     product() {
-      return products.find((product) => product.id === +this.$route.params.id);
+      return this.productData;
     },
     category() {
-      return categories.find(
-        (category) => category.id === this.product.categoryId
-      );
+      return this.productData.category;
     },
   },
   methods: {
@@ -267,6 +253,24 @@ export default {
       if (this.productAmount > 1) {
         this.productAmount -= 1;
       }
+    },
+    loadProduct() {
+      this.productLoading = true;
+      this.productLoadingFaild = false;
+      axios
+        .get(API_BASE_URL + "/api/products/" + this.$route.params.id)
+        .then((res) => (this.productData = res.data))
+        .catch(() => (this.productLoadingFaild = true))
+        .then(() => (this.productLoading = false));
+    },
+  },
+
+  watch: {
+    "$route.params.id": {
+      handler() {
+        this.loadProduct();
+      },
+      immediate: true,
     },
   },
 };
