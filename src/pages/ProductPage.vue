@@ -51,90 +51,24 @@
             <fieldset class="form__block">
               <legend class="form__legend">Цвет:</legend>
               <ul class="colors">
-                <li class="colors__item">
+                <li
+                  class="colors__item"
+                  v-for="color in availableColors"
+                  :key="color.id"
+                >
                   <label class="colors__label">
                     <input
                       class="colors__radio sr-only"
                       type="radio"
                       name="color-item"
-                      value="blue"
-                      checked=""
+                      :value="color.id"
+                      :checked="currentColorId === color.id"
+                      @change="updateCurrentColorId(color.id)"
                     />
                     <span
                       class="colors__value"
-                      style="background-color: #73b6ea"
-                    >
-                    </span>
-                  </label>
-                </li>
-                <li class="colors__item">
-                  <label class="colors__label">
-                    <input
-                      class="colors__radio sr-only"
-                      type="radio"
-                      name="color-item"
-                      value="yellow"
-                    />
-                    <span
-                      class="colors__value"
-                      style="background-color: #ffbe15"
-                    >
-                    </span>
-                  </label>
-                </li>
-                <li class="colors__item">
-                  <label class="colors__label">
-                    <input
-                      class="colors__radio sr-only"
-                      type="radio"
-                      name="color-item"
-                      value="gray" />
-                    <span
-                      class="colors__value"
-                      style="background-color: #939393"
-                    >
-                    </span
-                  ></label>
-                </li>
-              </ul>
-            </fieldset>
-
-            <fieldset class="form__block">
-              <legend class="form__legend">Объемб в ГБ:</legend>
-
-              <ul class="sizes sizes--primery">
-                <li class="sizes__item">
-                  <label class="sizes__label">
-                    <input
-                      class="sizes__radio sr-only"
-                      type="radio"
-                      name="sizes-item"
-                      value="32"
-                    />
-                    <span class="sizes__value"> 32gb </span>
-                  </label>
-                </li>
-                <li class="sizes__item">
-                  <label class="sizes__label">
-                    <input
-                      class="sizes__radio sr-only"
-                      type="radio"
-                      name="sizes-item"
-                      value="64"
-                    />
-                    <span class="sizes__value"> 64gb </span>
-                  </label>
-                </li>
-                <li class="sizes__item">
-                  <label class="sizes__label">
-                    <input
-                      class="sizes__radio sr-only"
-                      type="radio"
-                      name="sizes-item"
-                      value="128"
-                      checked=""
-                    />
-                    <span class="sizes__value"> 128gb </span>
+                      :style="{ backgroundColor: color.code }"
+                    ></span>
                   </label>
                 </li>
               </ul>
@@ -197,12 +131,7 @@
         </ul>
 
         <div class="item__content">
-          <p>
-            Навигация GPS, ГЛОНАСС, BEIDOU Galileo и QZSS<br />
-            Синхронизация со смартфоном<br />
-            Связь по Bluetooth Smart, ANT+ и Wi-Fi<br />
-            Поддержка сторонних приложений<br />
-          </p>
+          <p></p>
 
           <a href="#"> Все характеристики </a>
 
@@ -235,6 +164,7 @@ export default {
       productLoadingFaild: false,
       productAdded: false,
       productAddSending: false,
+      currentColorId: null,
     };
   },
   filters: { numberFormat },
@@ -244,6 +174,9 @@ export default {
     },
     category() {
       return this.productData.category;
+    },
+    availableColors() {
+      return this.productData ? this.productData.colors : [];
     },
   },
   methods: {
@@ -267,6 +200,9 @@ export default {
       if (this.productAmount > 1) {
         this.productAmount -= 1;
       }
+    },
+    updateCurrentColorId(colorId) {
+      this.currentColorId = colorId;
     },
     loadProduct() {
       this.productLoading = true;
