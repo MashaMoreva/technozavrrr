@@ -11,7 +11,7 @@
     <h3 class="product__title">
       {{ item.product.title }}
     </h3>
-    <p class="product__info">Объем: <span>128GB</span></p>
+
     <span class="product__code"> Артикул: {{ item.product.id }} </span>
 
     <div class="product__counter form__counter">
