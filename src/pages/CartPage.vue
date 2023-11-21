@@ -18,30 +18,37 @@
     </div>
 
     <section class="cart">
-      <form class="cart__form form" action="#" method="POST">
-        <div class="cart__field">
-          <ul class="cart__list">
-            <CartItem
-              v-for="item in products"
-              :key="item.productId"
-              :item="item"
-            />
-          </ul>
-        </div>
+      <div v-if="loading">Загрузка корзины...</div>
+      <div v-else-if="error">
+        Произошла ошибка при загрузке корзины
+        <button @click.prevent="loadCart">Попробовать еще раз</button>
+      </div>
+      <div v-else>
+        <form class="cart__form form" action="#" method="POST">
+          <div class="cart__field">
+            <ul class="cart__list">
+              <CartItem
+                v-for="item in products"
+                :key="item.productId"
+                :item="item"
+              />
+            </ul>
+          </div>
 
-        <div class="cart__block">
-          <p class="cart__desc">
-            Мы&nbsp;посчитаем стоимость доставки на&nbsp;следующем этапе
-          </p>
-          <p class="cart__price">
-            Итого: <span>{{ totalPrice | numberFormat }}</span>
-          </p>
+          <div class="cart__block">
+            <p class="cart__desc">
+              Мы&nbsp;посчитаем стоимость доставки на&nbsp;следующем этапе
+            </p>
+            <p class="cart__price">
+              Итого: <span>{{ totalPrice | numberFormat }}</span>
+            </p>
 
-          <button class="cart__button button button--primery" type="submit">
-            Оформить заказ
-          </button>
-        </div>
-      </form>
+            <button class="cart__button button button--primery" type="submit">
+              Оформить заказ
+            </button>
+          </div>
+        </form>
+      </div>
     </section>
   </main>
 </template>
@@ -53,6 +60,12 @@ import CartItem from "@/components/CartItem.vue";
 
 export default {
   filters: { numberFormat },
+  data() {
+    return {
+      loading: false,
+      error: false,
+    };
+  },
   computed: {
     ...mapGetters({
       products: "cartDetailProducts",
@@ -61,6 +74,23 @@ export default {
   },
   methods: {
     getCorrectEnding,
+    loadCart() {
+      this.loading = true;
+      this.error = false;
+
+      this.$store
+        .dispatch("loadCart")
+        .then(() => {
+          this.loading = false;
+        })
+        .catch(() => {
+          this.loading = false;
+          this.error = true;
+        });
+    },
+  },
+  created() {
+    this.loadCart();
   },
   components: { CartItem },
 };
