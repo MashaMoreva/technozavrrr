@@ -43,9 +43,14 @@
               Итого: <span>{{ totalPrice | numberFormat }}</span>
             </p>
 
-            <button class="cart__button button button--primery" type="submit">
+            <router-link
+              :to="{ name: 'order' }"
+              tag="button"
+              class="cart__button button button--primery"
+              type="submit"
+            >
               Оформить заказ
-            </button>
+            </router-link>
           </div>
         </form>
       </div>
@@ -57,6 +62,7 @@ import numberFormat from "@/helpers/numberFormat";
 import getCorrectEnding from "@/helpers/getCorrectEnding";
 import { mapGetters } from "vuex";
 import CartItem from "@/components/CartItem.vue";
+import router from "@/router";
 
 export default {
   filters: { numberFormat },
@@ -92,6 +98,6 @@ export default {
   created() {
     this.loadCart();
   },
-  components: { CartItem },
+  components: { CartItem, router },
 };
 </script>
