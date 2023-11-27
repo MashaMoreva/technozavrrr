@@ -18,58 +18,48 @@
     </div>
 
     <section class="cart">
-      <form class="cart__form form" action="#" method="POST">
+      <form
+        class="cart__form form"
+        action="#"
+        method="POST"
+        @submit.prevent="order"
+      >
         <div class="cart__field">
           <div class="cart__data">
-            <label class="form__label">
-              <input
-                class="form__input"
-                type="text"
-                name="name"
-                placeholder="Введите ваше полное имя"
-              />
-              <span class="form__value">ФИО</span>
-            </label>
+            <BaseFormText
+              v-model="formData.name"
+              :error="formError.name"
+              title="ФИО"
+              placeholder="Введите ваше полное имя"
+            />
 
-            <label class="form__label">
-              <input
-                class="form__input"
-                type="text"
-                name="address"
-                placeholder="Введите ваш адрес"
-              />
-              <span class="form__value">Адрес доставки</span>
-            </label>
+            <BaseFormText
+              v-model="formData.address"
+              :error="formError.address"
+              title="Адрес доставки"
+              placeholder="Введите ваш адрес"
+            />
 
-            <label class="form__label">
-              <input
-                class="form__input"
-                type="tel"
-                name="phone"
-                placeholder="Введите ваш телефон"
-              />
-              <span class="form__value">Телефон</span>
-              <span class="form__error">Неверный формат телефона</span>
-            </label>
+            <BaseFormText
+              v-model="formData.phone"
+              :error="formError.phone"
+              title="Телефон"
+              placeholder="Введите ваш телефон"
+            />
 
-            <label class="form__label">
-              <input
-                class="form__input"
-                type="email"
-                name="email"
-                placeholder="Введи ваш Email"
-              />
-              <span class="form__value">Email</span>
-            </label>
+            <BaseFormText
+              v-model="formData.email"
+              :error="formError.email"
+              title="Email"
+              placeholder="Введи ваш Email"
+            />
 
-            <label class="form__label">
-              <textarea
-                class="form__input form__input--area"
-                name="comments"
-                placeholder="Ваши пожелания"
-              ></textarea>
-              <span class="form__value">Комментарий к заказу</span>
-            </label>
+            <BaseFormTextarea
+              v-model="formData.comment"
+              :error="formError.comment"
+              title="Комментарий к заказу"
+              placeholder="Ваши пожелания"
+            />
           </div>
 
           <div class="cart__options">
@@ -158,11 +148,10 @@
             Оформить заказ
           </button>
         </div>
-        <div class="cart__error form__error-block">
+        <div class="cart__error form__error-block" v-if="formErrorMessage">
           <h4>Заявка не отправлена!</h4>
           <p>
-            Похоже произошла ошибка. Попробуйте отправить снова или
-            перезагрузите страницу.
+            {{ formErrorMessage }}
           </p>
         </div>
       </form>
@@ -170,5 +159,42 @@
   </main>
 </template>
 <script>
-export default {};
+import BaseFormText from "@/components/BaseFormText.vue";
+import BaseFormTextarea from "@/components/BaseFormTextarea.vue";
+import { API_BASE_URL } from "@/config";
+import axios from "axios";
+
+export default {
+  components: { BaseFormText, BaseFormTextarea },
+  data() {
+    return {
+      formData: {},
+      formError: {},
+      formErrorMessage: "",
+    };
+  },
+  methods: {
+    order() {
+      this.formError = {};
+      this.formErrorMessage = "";
+      axios
+        .post(
+          API_BASE_URL + "/api/orders",
+          {
+            ...this.formData,
+          },
+          {
+            params: {
+              userAccessKey: this.$store.state.userAccessKey,
+            },
+          }
+        )
+        .then(() => this.$store.commit("resetCart"))
+        .catch((error) => {
+          this.formError = error.response.data.error.request || {};
+          this.formErrorMessage = error.response.data.error.message;
+        });
+    },
+  },
+};
 </script>
