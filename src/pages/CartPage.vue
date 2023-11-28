@@ -40,7 +40,7 @@
               Мы&nbsp;посчитаем стоимость доставки на&nbsp;следующем этапе
             </p>
             <p class="cart__price">
-              Итого: <span>{{ totalPrice | numberFormat }}</span>
+              Итого: <span>{{ totalPrice | numberFormat }} ₽</span>
             </p>
 
             <router-link
@@ -48,6 +48,7 @@
               tag="button"
               class="cart__button button button--primery"
               type="submit"
+              :disabled="products.length === 0"
             >
               Оформить заказ
             </router-link>
