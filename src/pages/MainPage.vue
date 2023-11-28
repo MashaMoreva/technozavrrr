@@ -15,7 +15,9 @@
         :color-id.sync="filterColorId"
       />
       <section class="catalog">
-        <div v-if="productsLoading">Загрузка товаров...</div>
+        <div v-if="productsLoading" class="loader-container">
+          <p class="loader-text">Загрузка товаров...</p>
+        </div>
         <div v-if="productsLoadingFailed">
           Произошла ошибка при загрузке товаров
           <button @click.prevent="loadProducts">Попробовать еще раз</button>
@@ -30,6 +32,19 @@
     </div>
   </main>
 </template>
+
+<style>
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-text {
+  font-family: "PressStart";
+}
+</style>
 
 <script>
 import { API_BASE_URL } from "../config";
@@ -75,22 +90,20 @@ export default {
       this.productsLoading = true;
       this.productsLoadingFailed = false;
       clearTimeout(this.loadProductsTimer);
-      this.loadProductsTimer = setTimeout(() => {
-        axios
-          .get(API_BASE_URL + "/api/products", {
-            params: {
-              page: this.page,
-              limit: this.productsPerPage,
-              categoryId: this.filterCategoryId,
-              colorId: this.filterColorId,
-              minPrice: this.filterPriceFrom,
-              maxPrice: this.filterPriceTo,
-            },
-          })
-          .then((res) => (this.productsData = res.data))
-          .catch(() => (this.productsLoadingFailed = true))
-          .then(() => (this.productsLoading = false));
-      }, 1000);
+      axios
+        .get(API_BASE_URL + "/api/products", {
+          params: {
+            page: this.page,
+            limit: this.productsPerPage,
+            categoryId: this.filterCategoryId,
+            colorId: this.filterColorId,
+            minPrice: this.filterPriceFrom,
+            maxPrice: this.filterPriceTo,
+          },
+        })
+        .then((res) => (this.productsData = res.data))
+        .catch(() => (this.productsLoadingFailed = true))
+        .then(() => (this.productsLoading = false));
     },
   },
   watch: {
