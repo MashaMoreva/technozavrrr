@@ -112,19 +112,6 @@
   </main>
 </template>
 
-<style>
-.loader-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.loader-text {
-  font-family: "PressStart";
-}
-</style>
-
 <script>
 import BaseFormText from "@/components/BaseFormText.vue";
 import BaseFormTextarea from "@/components/BaseFormTextarea.vue";

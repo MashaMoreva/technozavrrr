@@ -113,19 +113,6 @@
   </main>
 </template>
 
-<style>
-.loader-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.loader-text {
-  font-family: "PressStart";
-}
-</style>
-
 <script>
 import numberFormat from "@/helpers/numberFormat";
 import getCorrectEnding from "@/helpers/getCorrectEnding";
