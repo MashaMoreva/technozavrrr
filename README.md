@@ -11,7 +11,7 @@
 - установите необходимые зависимости:  
 `npm install`
 - запустите проект:  
-`npm run serve` (приложение будет доступно по адресу http://localhost:8080/moire/)
+`npm run serve` (приложение будет доступно по адресу http://localhost:8080/technozavrrr/)
 
 #### Ссылки:
 
